@@ -1,0 +1,3652 @@
+{
+	"info": {
+		"_postman_id": "f1f545fc-93c8-4252-aa2c-b2926ed929fe",
+		"name": "01 - Tokens",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0101 - Log in as Admin",
+			"item": [
+				{
+					"name": "Login with admin user (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a709f2a-341d-4b2e-a89d-11b2ee86db08",
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Login successful. The account displayed in response matches with credentials and has admin rights.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.contact.alias).to.eql(pm.environment.get('api_login'));\r",
+									"    pm.expect(responseJson.contact.is_admin).to.eql(true);\r",
+									"    pm.environment.set(\"token\", responseJson.security.token);\r",
+									"    pm.environment.set(\"currentUserName\", responseJson.contact.alias);\r",
+									"    pm.environment.set(\"currentUserID\", responseJson.contact.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "b1f78615-c912-48dd-a0bf-1fbc5823984f",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"security\": {\r\n    \"credentials\": {\r\n      \"login\": \"{{api_login}}\",\r\n      \"password\": \"{{api_password}}\"\r\n    }\r\n  }\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/login"
+					},
+					"response": []
+				}
+			],
+			"id": "e96be538-4ada-4fbc-a10c-e33b36e198c4"
+		},
+		{
+			"name": "0102 - user_with_menu_action",
+			"item": [
+				{
+					"name": "Add user_with_menu_action (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new user has been successfully created.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "8886b472-f53b-4c59-a4ee-9fbe2e8601a1"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"api_login_user_menu_action\", \"user_with_menu_action\");\r",
+									"pm.collectionVariables.set(\"api_password_user_menu_action\", \"Centreon!123\");"
+								],
+								"type": "text/javascript",
+								"id": "e619a5f4-b2b6-4bed-8276-25ca4434bdd3"
+							}
+						}
+					],
+					"id": "3652d425-89f8-4c51-b5df-88a1350c0797",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_menu_action}};{{api_login_user_menu_action}};{{api_login_user_menu_action}}@localhost;{{api_password_user_menu_action}};0;1;en_US;local\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add reach_api parameters (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "5b2736e2-abc6-4830-b648-adf455ee1101"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "ec8afd4c-87a5-44de-bc50-6d1f8e361b49"
+							}
+						}
+					],
+					"id": "0eec45c1-56ce-49a6-b10d-a2803ad4bdd4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"setparam\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_menu_action}};reach_api;1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add reach_api_rt parameters (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "0778c0ed-8b1b-49c7-b3f9-fe1c1cd3608a"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "8fe56734-ddc8-4983-b40d-ea40c13282cf"
+							}
+						}
+					],
+					"id": "6633c448-dabf-4123-b726-79d7760db9b9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"setparam\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_menu_action}};reach_api_rt;1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create ACL Group Menu_Action_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "b7240cbc-62b8-4d6a-8798-80b2a026cb06"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "9f68a9b0-2077-42f8-8bfd-c5dd2f0fc31f"
+							}
+						}
+					],
+					"id": "64655929-5dd1-42ac-bc88-3ce7267ea742",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_Action_TOKEN;Menu_Action_TOKEN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link user to Menu_Action_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "38e9a780-d810-43cd-8acf-1e12063de05f"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "3c1beb67-b3f3-458a-abd6-f80d22137766"
+							}
+						}
+					],
+					"id": "7d6c8b6d-8a28-40ec-b99e-8d1391312233",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addcontact\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_Action_TOKEN;{{api_login_user_menu_action}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link resources to Menu_Action_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "33bceaf1-186b-4cb6-9d92-e258c5a876a6"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "a2c6c434-376d-4632-9763-e3f3580a7fea"
+							}
+						}
+					],
+					"id": "06c8e665-c0b4-4796-83ce-b273c9fe31de",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addresource\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_Action_TOKEN;All Resources\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create ACL Menu TOKENS (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "f005e314-55a5-4c73-9ed8-0106a1ee99f7"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "c3e1ae2b-1a0d-4d3d-ba59-b0fbd0977f7c"
+							}
+						}
+					],
+					"id": "14f71fab-1a1f-421e-8273-1575092a11de",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"ACLMENU\",\r\n  \"values\": \"TOKENS;TOKENS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Grant RW right TOKENS (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "46baa1f6-ebbe-4509-b977-0c1d3211be13"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "15dc0a3b-901d-42fb-a9f4-aaa3ec9ac4ab"
+							}
+						}
+					],
+					"id": "d142e952-f288-46d3-8d11-93cf1af1ed2b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"grantrw\",\r\n  \"object\": \"ACLMENU\",\r\n\"values\": \"TOKENS;1;Administration;API Tokens\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link Menu_Action_TOKEN to TOKENS (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "26725fee-4a3c-4e83-9d7e-82fa388a340a"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "e0d94028-e24b-400c-b36c-231c4ee8b4d0"
+							}
+						}
+					],
+					"id": "b12ce9f3-4a0d-4cee-a19d-976dab86f0b8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addmenu\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_Action_TOKEN;TOKENS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create ACL Action Menu_Action_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "9cea77a9-79cd-4830-a9ca-27fa2dff72e8"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "f83cedc3-2926-4e27-a009-21b3eea6592f"
+							}
+						}
+					],
+					"id": "3c2c8ea0-9344-4f5b-beb2-349cc525f2b2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"ACLACTION\",\r\n  \"values\": \"Menu_Action_TOKEN;Menu_Action_TOKEN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Grant manage token action in Menu_Action_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "453016f5-c988-471b-abda-912c95041a3c"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "40f9ea3a-aa9b-4dee-9159-63b33cbbd329"
+							}
+						}
+					],
+					"id": "4fdc6753-66d2-4a08-aaee-e2b85574a987",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"grant\",\r\n  \"object\": \"ACLACTION\",\r\n\"values\": \"Menu_Action_TOKEN;manage_tokens\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link Menu_Action_TOKEN to Menu_Action_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "34591492-23a4-4459-970a-9ba4a8054f34"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "c32c42b9-9267-45ce-9279-0717185ee72f"
+							}
+						}
+					],
+					"id": "a393e424-b1e7-4a45-9050-a4e9bba5da19",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addaction\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_Action_TOKEN;Menu_Action_TOKEN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				}
+			],
+			"id": "752242a1-39eb-469a-96f2-7e87417df139"
+		},
+		{
+			"name": "0103 - user_with_menu",
+			"item": [
+				{
+					"name": "Add user_with_menu (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"api_login_user_menu\", \"user_with_menu\");\r",
+									"pm.collectionVariables.set(\"api_password_user_menu\", \"Centreon!123\");"
+								],
+								"type": "text/javascript",
+								"id": "031755c3-1c4d-4773-94be-e95bcf346aa5"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new user has been successfully created.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "2523fe88-083a-4509-8710-61cef79e9f84"
+							}
+						}
+					],
+					"id": "1260b356-9b1b-4a4d-a1f9-70d5093980c5",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_menu}};{{api_login_user_menu}};{{api_login_user_menu}}@localhost;{{api_password_user_menu}};0;1;en_US;local\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add reach_api parameters (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "563f891f-9e4e-4474-a2f0-22c82b1b2b7a"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "491d3d8d-dd27-436a-84fd-2be61dd35066"
+							}
+						}
+					],
+					"id": "9710c34e-3d4c-4637-9788-07fb87124477",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"setparam\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_menu}};reach_api;1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add reach_api_rt parameters (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "387a6874-d4cc-4ce4-931c-e8961e4a38d3"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "5e3f9419-af22-4bd1-aab3-c17496544394"
+							}
+						}
+					],
+					"id": "9594ee73-bb94-42cf-b41f-c06cd71c2aa2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"setparam\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_menu}};reach_api_rt;1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create ACL Group Menu_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "f779d209-08b1-42fa-b553-423819086a0c"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "c6addca0-35fa-4d34-8473-72c8a11d0522"
+							}
+						}
+					],
+					"id": "a0fdc25f-ae48-4a34-b8f3-aed391a98f01",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_TOKEN;Menu_TOKEN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link user to Menu_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "28eae427-ac2c-4baa-b6b1-d4533758ce4d"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "204a43e7-9f27-47cb-b88a-505f7976c01d"
+							}
+						}
+					],
+					"id": "c9d39115-438b-4f39-835d-132f24db759a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addcontact\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_TOKEN;{{api_login_user_menu}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link resources to Menu_TOKEN (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "0ce1f516-aa93-4ebb-91dd-ee187dabd9c2"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "9f0ebd3e-37fe-4f46-92a9-99dde9557c36"
+							}
+						}
+					],
+					"id": "6987adb6-11b6-46b4-a304-1b3a14061d7d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addresource\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_TOKEN;All Resources\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link Menu_Action_TOKEN to TOKENS (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "20988cb5-e7ef-47a6-b8a9-c400ae7dffb9"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "07778a82-6ddf-42d7-9a86-d5d97adb95b8"
+							}
+						}
+					],
+					"id": "2ff37a05-0527-48cb-9bf5-45ec4de77875",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addmenu\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"Menu_TOKEN;TOKENS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				}
+			],
+			"id": "4004d50f-c728-4cba-a2ef-ba1299b3bb2b"
+		},
+		{
+			"name": "0104 - user_no_access",
+			"item": [
+				{
+					"name": "Add user_no_access_Token (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new user has been successfully created.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "54c6bcb9-037c-4903-8636-2694bfb077c5"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"api_login_user_no_access_Token\", \"user_no_access_Token\");\r",
+									"pm.collectionVariables.set(\"api_password_user_no_access_Token\", \"Centreon!123\");"
+								],
+								"type": "text/javascript",
+								"id": "a7d67366-5b3b-41d8-a056-4742f14ed816"
+							}
+						}
+					],
+					"id": "4926636b-d6ea-4676-bdb9-9304fbd5d63a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_no_access_Token}};{{api_login_user_no_access_Token}};{{api_login_user_no_access_Token}}@localhost;{{api_password_user_no_access_Token}};0;1;en_US;local\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add reach_api parameters (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "3b5741f3-ceea-4fc3-9edb-5dd84d91cd7f"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "faad507d-d880-4444-9a30-1b8835361fe2"
+							}
+						}
+					],
+					"id": "5011b73e-5a6d-4d2b-81b8-e01e4fe2e57a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"setparam\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_no_access_Token}};reach_api;1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add reach_api_rt parameters (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "3ec3b378-d64e-4160-8946-c11b1aa624eb"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "cf796259-a766-46cc-b6d0-f50806a94366"
+							}
+						}
+					],
+					"id": "84f45be5-56cf-494f-badd-c9b4a12cd92c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"setparam\",\r\n  \"object\": \"CONTACT\",\r\n  \"values\": \"{{api_login_user_no_access_Token}};reach_api_rt;1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create ACL Group no_access (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "fbafbedd-64e1-48bc-9be9-9fb0d7bd7cbe"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "13858375-b062-4f9e-aafc-7fb49307acee"
+							}
+						}
+					],
+					"id": "48123f4f-7646-4590-a744-b3a769e2bc38",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"no_access_Token;no_access_Token\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link user to no_access (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "47210cf3-29eb-48c5-9927-afb9e2dbc21a"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "78faab6a-fac8-4206-8e3d-bc5c206a9e7f"
+							}
+						}
+					],
+					"id": "f0366d79-2f91-40b0-ae5d-d89175b7185e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addcontact\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"no_access_Token;{{api_login_user_no_access_Token}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link resources to no_access (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "520a331e-661e-42d4-a9c9-2ae960951393"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "8794b383-7b28-49be-81a1-fa2d92fa3b4d"
+							}
+						}
+					],
+					"id": "ac90f1f7-8e6c-43e4-a6b3-2e7c92cd2b05",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addresource\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"no_access_Token;All Resources\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create ACL Menu no_access (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "c6d875a9-5bff-44bf-9c57-7a6bbd8bd549"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "124dc209-fad6-4b47-a66d-100373df88cd"
+							}
+						}
+					],
+					"id": "3d841c83-4514-458d-85e3-ca05b20871da",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"add\",\r\n  \"object\": \"ACLMENU\",\r\n  \"values\": \"no_access_Token;no_access_Token\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Link no_access to no_access (successful)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "148e2d65-c89e-4b4c-b0b5-b5230a61914e"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The new api access rights has been successfully added.\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "cb1be536-4426-46ef-aaf8-fe758b68f7e8"
+							}
+						}
+					],
+					"id": "a414ff01-6acc-4205-8f3d-9c313554bd9e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"addmenu\",\r\n  \"object\": \"ACLGROUP\",\r\n  \"values\": \"no_access_Token;no_access_Token\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				}
+			],
+			"id": "a6e82217-6fc8-4788-b572-7f887082f69a"
+		},
+		{
+			"name": "0105 - By Admin",
+			"item": [
+				{
+					"name": "Login with admin user (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Login successful. The account displayed in response matches with credentials and has admin rights.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.contact.alias).to.eql(pm.environment.get('api_login'));\r",
+									"    pm.expect(responseJson.contact.is_admin).to.eql(true);\r",
+									"    pm.environment.set(\"token\", responseJson.security.token);\r",
+									"    pm.environment.set(\"currentUserName\", responseJson.contact.alias);\r",
+									"    pm.environment.set(\"currentUserID\", responseJson.contact.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "1b45ccee-9978-4ae0-bc57-1d13a12a965f"
+							}
+						}
+					],
+					"id": "a59e0334-f5ea-4d87-afae-a9115161af7d",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"security\": {\r\n    \"credentials\": {\r\n      \"login\": \"{{api_login}}\",\r\n      \"password\": \"{{api_password}}\"\r\n    }\r\n  }\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve users ID (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"for(let i=0; i < responseJson.result.length; i++){\r",
+									"    if(responseJson.result[i].alias === \"admin\"){\r",
+									"        pm.collectionVariables.set(\"Admin_Id\", responseJson.result[i].id);\r",
+									"    }\r",
+									"    if(responseJson.result[i].name === \"user_with_menu_action\"){\r",
+									"        pm.collectionVariables.set(\"User_Menu_Action_Id\", responseJson.result[i].id);\r",
+									"    }\r",
+									"    if(responseJson.result[i].name === \"user_with_menu\"){\r",
+									"        pm.collectionVariables.set(\"User_Menu_Id\", responseJson.result[i].id);\r",
+									"    }\r",
+									"    if(responseJson.result[i].name === \"user_no_access_Token\"){\r",
+									"        pm.collectionVariables.set(\"User_no_access_Id\", responseJson.result[i].id);\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"id": "40d9751a-c646-49ae-b822-464aceb80da4"
+							}
+						}
+					],
+					"id": "d3153290-7391-4cad-ade9-34a09503cb3d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"show\",\r\n  \"object\": \"CONTACT\"\r\n} "
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve users Name (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"for(let i=0; i < responseJson.result.length; i++){\r",
+									"    if(responseJson.result[i].alias === \"admin\"){\r",
+									"        pm.collectionVariables.set(\"Admin_Name\", responseJson.result[i].name);\r",
+									"    }\r",
+									"    if(responseJson.result[i].name === \"user_with_menu_action\"){\r",
+									"        pm.collectionVariables.set(\"User_Menu_Action_Name\", responseJson.result[i].name);\r",
+									"    }\r",
+									"    if(responseJson.result[i].name === \"user_with_menu\"){\r",
+									"        pm.collectionVariables.set(\"User_Menu_Name\", responseJson.result[i].name);\r",
+									"    }\r",
+									"    if(responseJson.result[i].name === \"user_no_access_Token\"){\r",
+									"        pm.collectionVariables.set(\"User_no_access_Name\", responseJson.result[i].name);\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"id": "5fcccecb-b36b-4895-985a-faf3b8e40f06"
+							}
+						}
+					],
+					"id": "c6aaf27e-22ce-41db-9117-c55a61389b65",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"show\",\r\n  \"object\": \"CONTACT\"\r\n} "
+						},
+						"url": "{{baseUriCentreonCLAPI}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create token by admin for admin (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has been successfully created.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"Token1Name\", response.name);\r",
+									"\r",
+									"    pm.expect(response).to.include({\r",
+									"        \"name\":pm.collectionVariables.get(\"Token1Name\"),\r",
+									"        \"expiration_date\": \"2025-12-31T00:00:00+01:00\",\r",
+									"        \"is_revoked\": false\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.user).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"Admin_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"Admin_Name\")\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.creator).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"Admin_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"Admin_Name\")\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "e46e7cbc-1a37-4dd5-9872-90195aff697b"
+							}
+						}
+					],
+					"id": "89f94e8a-4f0f-4db6-a7a5-6ab9c4855717",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-first-token-by-admin-for-admin\",\r\n  \"user_id\": {{Admin_Id}},\r\n  \"expiration_date\": \"2025-12-31T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after first token creation (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (1)\r",
+									"    pm.expect(responseJson.result.length).to.eql(1);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:pm.collectionVariables.get(\"Token1Name\")}).\r",
+									"            and.to.include({expiration_date:\"2025-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "2a6fb33f-5824-4fb5-939b-b2f9f86a63a0"
+							}
+						}
+					],
+					"id": "a9349d9b-d077-4c6d-a2af-1a610baaab81",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create token by admin for User_Menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has been successfully created.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"Token2Name\", response.name);\r",
+									"\r",
+									"    pm.expect(response).to.include({\r",
+									"        \"name\":pm.collectionVariables.get(\"Token2Name\"),\r",
+									"        \"expiration_date\": \"2099-12-31T00:00:00+01:00\",\r",
+									"        \"is_revoked\": false\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.user).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Name\")\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.creator).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"Admin_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"Admin_Name\")\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "4f912444-17a0-4810-b3bd-516b19272ff2"
+							}
+						}
+					],
+					"id": "a9ee012c-bcc6-48b7-aed6-674e6e5a793e",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-second-token-by-admin-for-user-with-menu\",\r\n  \"user_id\": {{User_Menu_Id}},\r\n  \"expiration_date\": \"2099-12-31T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after second token creation (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (2)\r",
+									"    pm.expect(responseJson.result.length).to.eql(2);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:pm.collectionVariables.get(\"Token1Name\")}).\r",
+									"            and.to.include({expiration_date:\"2025-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1]).to.include({name:pm.collectionVariables.get(\"Token2Name\")}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[1].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "bdcb363f-1162-4a4e-966c-10a1e2c83e2f"
+							}
+						}
+					],
+					"id": "252ff446-b3ea-45cf-9d3d-a1bd2221e10b",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create token by admin for User_Menu_Action (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has been successfully created.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"Token3Name\", response.name);\r",
+									"\r",
+									"    pm.expect(response).to.include({\r",
+									"        \"name\":pm.collectionVariables.get(\"Token3Name\"),\r",
+									"        \"expiration_date\": \"2099-12-31T00:00:00+01:00\",\r",
+									"        \"is_revoked\": false\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.user).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Action_Name\")\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.creator).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"Admin_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"Admin_Name\")\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "0007b5d8-292c-4684-b27e-e3f7cc192ecb"
+							}
+						}
+					],
+					"id": "7b29711a-bf74-4add-aeb2-1732aaaa6d2a",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-third-token-by-admin-for-user-with-menu-action\",\r\n  \"user_id\": {{User_Menu_Action_Id}},\r\n  \"expiration_date\": \"2099-12-31T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after third token creation (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (3)\r",
+									"    pm.expect(responseJson.result.length).to.eql(3);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:pm.collectionVariables.get(\"Token1Name\")}).\r",
+									"            and.to.include({expiration_date:\"2025-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1]).to.include({name:pm.collectionVariables.get(\"Token2Name\")}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[1].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[2]).to.include({name:pm.collectionVariables.get(\"Token3Name\")}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[2].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Action_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[2].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "8d160713-ad1d-4b4f-84ce-cc236f2753af"
+							}
+						}
+					],
+					"id": "d51fa329-aab1-4514-9c67-9c705a08b6a2",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create token with duplicated name (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has not been created, because the name already exist.\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.message).to.include(\r",
+									"        \"The token name '\" + pm.collectionVariables.get(\"Token3Name\") +\"' already exists\"\r",
+									"    );\r",
+									"\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "21bade88-1ac6-4e38-9972-a7b268460fc9"
+							}
+						}
+					],
+					"id": "c33b4a53-c018-4168-afdd-a725fda919a1",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-third-token-by-admin-for-user-with-menu-action\",\r\n  \"user_id\": {{User_Menu_Action_Id}},\r\n  \"expiration_date\": \"2099-12-31T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Create token without name (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has not been created, because the name already exist.\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.message).to.include(\"[NewToken::name] The string is empty, but non empty string was expected\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "1051ef21-59cc-436b-856f-1b6677584feb"
+							}
+						}
+					],
+					"id": "a49a0ffc-26f0-4899-83f7-932f9bf71dbe",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"\",\r\n  \"user_id\": {{Admin_Id}},\r\n  \"expiration_date\": \"2099-12-31T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete someone else token without complete endpoint (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token3Name\") + \"has not been deleted, because the endpoint is not complete.\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.message).to.include(\"Token not found\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "65349527-f590-40dd-9970-3dc8f425b1e6"
+							}
+						}
+					],
+					"id": "93d19c01-a485-4613-b4de-eae9cd916c6b",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token3Name}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete someone else token with complete endpoint (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token3Name\") + \"has been successfully deleted.\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    pm.collectionVariables.unset(\"Token3Name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "178a3e6b-20c9-473e-aa9b-753955756e10"
+							}
+						}
+					],
+					"id": "fc5f5de2-f7c3-4d44-acf6-2badb8f661d8",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token3Name}}/users/{{User_Menu_Action_Id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after deletion by admin (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (2)\r",
+									"    pm.expect(responseJson.result.length).to.eql(2);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:\"my-first-token-by-admin-for-admin\"}).\r",
+									"            and.to.include({expiration_date:\"2025-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1]).to.include({name:\"my-second-token-by-admin-for-user-with-menu\"}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[1].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "7c77dc98-ef6f-4b72-89b2-ebed79b4bc0c"
+							}
+						}
+					],
+					"id": "5ee32658-3aad-4e73-b205-efd2bedae0e9",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout from admin user (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Logout successful. The displayed message is the one that is expected ('Successful logout').\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.message).to.eql(\"Successful logout\");\r",
+									"    pm.environment.unset(\"token\");\r",
+									"    pm.environment.unset(\"currentUserName\");\r",
+									"    pm.environment.unset(\"currentUserID\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "f5f8586c-b397-4946-a74e-29c50afc3cce"
+							}
+						}
+					],
+					"id": "79819193-7ccc-49bc-93e4-6bea2c768c77",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token}}",
+								"key": "X-AUTH-TOKEN",
+								"in": "header"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"logout"
+							],
+							"variable": [
+								{
+									"id": "2c6c626a-49d5-4e61-8228-5b7192c23696",
+									"key": "protocol",
+									"value": "{{protocol}}",
+									"description": "HTTP schema (This can only be one of http,https)"
+								},
+								{
+									"id": "cfa6c52b-026a-4e4a-9447-d00863906567",
+									"key": "server",
+									"value": "{{server}}",
+									"description": "IP address or hostname of Centreon server"
+								},
+								{
+									"id": "9ba6ed7b-b03b-4b49-8c5f-a22fe914cd13",
+									"key": "port",
+									"value": "{{port}}",
+									"description": "Port used by HTTP server"
+								},
+								{
+									"id": "66753aa3-5f55-4993-991c-6689fe8cea9e",
+									"key": "version",
+									"value": "{{version}}",
+									"description": "Version of the API"
+								}
+							]
+						},
+						"description": "Entry point to delete an existing authentication token."
+					},
+					"response": []
+				}
+			],
+			"id": "91a7968e-d2bc-49ec-bbca-af6f855a7e41"
+		},
+		{
+			"name": "0106 - By User with Menu",
+			"item": [
+				{
+					"name": "Login with user with menu (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Login successful. The account displayed in response matches with credentials and has not admin rights.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.contact.alias).to.eql(pm.environment.get('api_login_user_menu'));\r",
+									"    pm.expect(responseJson.contact.is_admin).to.eql(false);\r",
+									"    pm.environment.set(\"token\", responseJson.security.token);\r",
+									"    pm.environment.set(\"currentUserName\", responseJson.contact.alias);\r",
+									"    pm.environment.set(\"currentUserID\", responseJson.contact.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "97105354-d154-4ce0-ba7b-d3d852777d9e"
+							}
+						}
+					],
+					"id": "b35bebd3-2394-4080-b3c5-806f2be2249c",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"security\": {\r\n    \"credentials\": {\r\n      \"login\": \"{{api_login_user_menu}}\",\r\n      \"password\": \"{{api_password_user_menu}}\"\r\n    }\r\n  }\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Create token by User_Menu for User_Menu (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has been successfully created.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"Token4Name\", response.name);\r",
+									"\r",
+									"    pm.expect(response).to.include({\r",
+									"        \"name\":pm.collectionVariables.get(\"Token4Name\"),\r",
+									"        \"expiration_date\": \"3051-06-02T00:00:00+02:00\",\r",
+									"        \"is_revoked\": false\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.user).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Name\")\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.creator).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Name\")\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "a17f765e-9dc4-43c0-ab3f-fd1f2d846f71"
+							}
+						}
+					],
+					"id": "0cf10e5d-411c-4f82-a10b-0ce382cc4ed6",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-third-token-by-user-menu-for-user-menu\",\r\n  \"user_id\": {{currentUserID}},\r\n  \"expiration_date\": \"3051-06-02T00:00:00+02:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Create token for someone else (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"The token has not been created because the user does not have the rights to manage token for others.\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"\r",
+									"    pm.expect(responseJson.message).to.eql(\"You are not allowed to add tokens linked to user ID \" + pm.collectionVariables.get(\"User_no_access_Id\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "0431d65f-6e63-4619-8570-63f24b0c0a6e"
+							}
+						}
+					],
+					"id": "67a4a90b-9407-4ab3-81a8-4cf06006a2b9",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-third-token-by-user-menu-for-no_access\",\r\n  \"user_id\": {{User_no_access_Id}},\r\n  \"expiration_date\": \"3051-06-02T00:00:00+02:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after fourth token creation (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (2)\r",
+									"    pm.expect(responseJson.result.length).to.eql(2);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:\"my-second-token-by-admin-for-user-with-menu\"}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")})\r",
+									"\r",
+									"    pm.expect(responseJson.result[1]).to.include({name:\"my-third-token-by-user-menu-for-user-menu\"}).\r",
+									"            and.to.include({expiration_date:\"3051-06-02T00:00:00+02:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[1].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[1].creator).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "86bc5335-cc6c-4e16-bb2f-da560a147a97"
+							}
+						}
+					],
+					"id": "da374e40-2350-4123-8e80-e2f4ea3538ba",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletion of User_Menu token by User_Menu (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token4Name\") + \"has been successfully deleted.\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    pm.collectionVariables.unset(\"Token4Name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "6804cee5-50c1-45cf-a3fc-9b0fdd33b6f5"
+							}
+						}
+					],
+					"id": "a54ed46f-a9b6-421d-b6b3-a23c9844ec8c",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token4Name}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Deletion Admin token without manage tokens rights (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"The token has not been deleted because user doesn't has the necessary rights.\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    pm.expect(responseJson.message).to.eql(\"You are not allowed to delete tokens linked to user ID \" + pm.collectionVariables.get(\"Admin_Id\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "6e8b2f67-3703-450f-8a65-c99d7bebbcf3"
+							}
+						}
+					],
+					"id": "93f89af3-be4c-44ac-8d1f-7cf8b5ae92ac",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token1Name}}/users/{{Admin_Id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after deletion by user with menu (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (1)\r",
+									"    pm.expect(responseJson.result.length).to.eql(1);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:\"my-second-token-by-admin-for-user-with-menu\"}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")})\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "72f8d720-8caf-40f7-a42d-806fc759b1af"
+							}
+						}
+					],
+					"id": "e7144634-3278-4d97-8973-7667e1e8771d",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout from user with menu (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Logout successful. The displayed message is the one that is expected ('Successful logout').\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.message).to.eql(\"Successful logout\");\r",
+									"    pm.environment.unset(\"token\");\r",
+									"    pm.environment.unset(\"currentUserName\");\r",
+									"    pm.environment.unset(\"currentUserID\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "74cf784e-6827-49f3-9305-475b59ce7964"
+							}
+						}
+					],
+					"id": "9cd79677-3064-4dbe-aa81-fba3b9123af2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token}}",
+								"key": "X-AUTH-TOKEN",
+								"in": "header"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"logout"
+							],
+							"variable": [
+								{
+									"id": "9696b1ff-7b45-44f1-96d2-3caa1a6d0d65",
+									"key": "protocol",
+									"value": "{{protocol}}",
+									"description": "HTTP schema (This can only be one of http,https)"
+								},
+								{
+									"id": "902baaf8-00c9-4381-9fd7-3edc9f2004df",
+									"key": "server",
+									"value": "{{server}}",
+									"description": "IP address or hostname of Centreon server"
+								},
+								{
+									"id": "76008534-786b-40bd-a6cc-59e52424f9e5",
+									"key": "port",
+									"value": "{{port}}",
+									"description": "Port used by HTTP server"
+								},
+								{
+									"id": "213214aa-5769-41fd-b738-f39b25a905da",
+									"key": "version",
+									"value": "{{version}}",
+									"description": "Version of the API"
+								}
+							]
+						},
+						"description": "Entry point to delete an existing authentication token."
+					},
+					"response": []
+				}
+			],
+			"id": "c772dd61-881f-4fe7-ad8a-9a89b7d51b54"
+		},
+		{
+			"name": "0107 - By User with No Access",
+			"item": [
+				{
+					"name": "Login with user with no access (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Login successful. The account displayed in response matches with credentials and has not admin rights.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.contact.alias).to.eql(pm.environment.get('api_login_user_no_access_Token'));\r",
+									"    pm.expect(responseJson.contact.is_admin).to.eql(false);\r",
+									"    pm.environment.set(\"token\", responseJson.security.token);\r",
+									"    pm.environment.set(\"currentUserName\", responseJson.contact.alias);\r",
+									"    pm.environment.set(\"currentUserID\", responseJson.contact.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "1c1d5c46-04b1-4b5a-abf2-e4b50c1941f4"
+							}
+						}
+					],
+					"id": "78a7415e-ed4c-434c-8894-b7cf2c90ed93",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"security\": {\r\n    \"credentials\": {\r\n      \"login\": \"{{api_login_user_no_access_Token}}\",\r\n      \"password\": \"{{api_password_user_no_access_Token}}\"\r\n    }\r\n  }\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Create token (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"The token has not been created because user doesn't has the necessary rights.\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"\r",
+									"    pm.expect(responseJson.message).to.eql(\"You are not allowed to add tokens\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "a6dade9c-43d8-487c-bb30-c972b3a7f175"
+							}
+						}
+					],
+					"id": "b6a563ca-a3b5-4657-8e6b-8d2c6adf17cb",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-third-token-by-mr-no_access-for-mr-no_access\",\r\n  \"user_id\": {{currentUserID}},\r\n  \"expiration_date\": \"3051-06-02T00:00:00+02:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"The token has not been listed because user doesn't has the necessary rights.\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"\r",
+									"    pm.expect(responseJson.message).to.eql(\"You are not allowed to list the tokens\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "3cd78b10-7c25-460c-8b85-abd6d7b7ad9e"
+							}
+						}
+					],
+					"id": "f994ef05-19b7-4b0d-8a78-d38f89294b25",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete token (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"The token has not been deleted because user doesn't has the necessary rights.\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"\r",
+									"    pm.expect(responseJson.message).to.eql(\"You are not allowed to delete tokens\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "e2603539-9743-4c7d-bd9b-19721e79bd3e"
+							}
+						}
+					],
+					"id": "4ae69e02-bed8-4d47-a38d-158e5eafb1ea",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token2Name}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout from user with no access (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Logout successful. The displayed message is the one that is expected ('Successful logout').\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.message).to.eql(\"Successful logout\");\r",
+									"    pm.environment.unset(\"token\");\r",
+									"    pm.environment.unset(\"currentUserName\");\r",
+									"    pm.environment.unset(\"currentUserID\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "1b2c7bde-194c-4e80-b428-b6471b079c16"
+							}
+						}
+					],
+					"id": "d4d358d9-cb92-49b7-b883-b0575fd1f2a7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token}}",
+								"key": "X-AUTH-TOKEN",
+								"in": "header"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"logout"
+							],
+							"variable": [
+								{
+									"id": "6561390d-e317-4dc2-b996-5f0756c22fd2",
+									"key": "protocol",
+									"value": "{{protocol}}",
+									"description": "HTTP schema (This can only be one of http,https)"
+								},
+								{
+									"id": "1b785792-9d6a-4072-b8c4-757da4c44122",
+									"key": "server",
+									"value": "{{server}}",
+									"description": "IP address or hostname of Centreon server"
+								},
+								{
+									"id": "cdba016e-ec58-4195-8900-43af945e1488",
+									"key": "port",
+									"value": "{{port}}",
+									"description": "Port used by HTTP server"
+								},
+								{
+									"id": "7e36c485-8603-4d28-ba61-0ff1f3da2fed",
+									"key": "version",
+									"value": "{{version}}",
+									"description": "Version of the API"
+								}
+							]
+						},
+						"description": "Entry point to delete an existing authentication token."
+					},
+					"response": []
+				}
+			],
+			"id": "bdd8358e-24bb-472e-94a5-52f011b71ff3"
+		},
+		{
+			"name": "0108 - By User with Menu & Action",
+			"item": [
+				{
+					"name": "Login with user with menu & action (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Login successful. The account displayed in response matches with credentials and has not admin rights.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.contact.alias).to.eql(pm.environment.get('api_login_user_menu_action'));\r",
+									"    pm.expect(responseJson.contact.is_admin).to.eql(false);\r",
+									"    pm.environment.set(\"token\", responseJson.security.token);\r",
+									"    pm.environment.set(\"currentUserName\", responseJson.contact.alias);\r",
+									"    pm.environment.set(\"currentUserID\", responseJson.contact.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "5bdd03e7-f88f-4e9e-8626-673a8d41bdca"
+							}
+						}
+					],
+					"id": "82cae5c8-7c01-469a-8e3f-d01bc57a10c5",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"security\": {\r\n    \"credentials\": {\r\n      \"login\": \"{{api_login_user_menu_action}}\",\r\n      \"password\": \"{{api_password_user_menu_action}}\"\r\n    }\r\n  }\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a token by User_Menu_Action for User_Menu_Action (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has been successfully created.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"Token5Name\", response.name);\r",
+									"\r",
+									"    pm.expect(response).to.include({\r",
+									"        \"name\":pm.collectionVariables.get(\"Token5Name\"),\r",
+									"        \"expiration_date\": \"2024-08-27T00:00:00+02:00\",\r",
+									"        \"is_revoked\": false\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.user).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Action_Name\")\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.creator).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Action_Name\")\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "85b55163-580c-4204-b4b8-3121fa306244"
+							}
+						}
+					],
+					"id": "6400fb7a-7676-4fbf-a5d0-57b72c9d2519",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-fourth-token-by-user-menu-action-for-user-menu-action\",\r\n  \"user_id\": {{currentUserID}},\r\n  \"expiration_date\": \"2024-08-27T00:00:00+02:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a token with a date in the past (error)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"The token can't be created with an expiration date in the past.\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var moment = require('moment');\r",
+									"    pm.variables.set('currentdate', moment.utc().format((\"YYYY-MM-DD\")));\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.message).to.include(\"[NewToken::expirationDate] The date \\\"1998-12-02T00:00:00+01:00\\\" was expected to be at most \" + pm.variables.get(\"currentdate\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "7e1873d8-8081-4e41-b33c-a35def27f050"
+							}
+						}
+					],
+					"id": "aec10abb-b86c-433f-802f-b09a10ce2f56",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-sixth-token-by-user-menu-action-for-admin\",\r\n  \"user_id\": {{Admin_Id}},\r\n  \"expiration_date\": \"1998-12-02T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a token by User_Menu_Action for Admin (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token has been successfully created.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"\r",
+									"    // Creation of a variable with the name of the new token\r",
+									"    var response = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"Token6Name\", response.name);\r",
+									"\r",
+									"    pm.expect(response).to.include({\r",
+									"        \"name\":pm.collectionVariables.get(\"Token6Name\"),\r",
+									"        \"expiration_date\": \"9999-12-02T00:00:00+01:00\",\r",
+									"        \"is_revoked\": false\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.user).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"Admin_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"Admin_Name\")\r",
+									"    });\r",
+									"\r",
+									"    pm.expect(response.creator).to.include({\r",
+									"        \"id\": parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\")),\r",
+									"        \"name\": pm.collectionVariables.get(\"User_Menu_Action_Name\")\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "a9ceabde-083f-4485-88cb-fee150e7171d"
+							}
+						}
+					],
+					"id": "a71d740e-2123-4ab0-9516-4762da9bf4d8",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"my-fifth-token-by-user-menu-action-for-admin\",\r\n  \"user_id\": {{Admin_Id}},\r\n  \"expiration_date\": \"9999-12-02T00:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "List tokens after sixth token creation (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"/  Check code status\r",
+									"*/\r",
+									"pm.test(\"A list of token has been successfully fetched.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"/  Check body content\r",
+									"*/\r",
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"The tokens retrieved are listed with expected informations\", function() {\r",
+									"    // Check the number of tokens (4)\r",
+									"    pm.expect(responseJson.result.length).to.eql(4);\r",
+									"\r",
+									"    // Check the properties of each token\r",
+									"    pm.expect(responseJson.result[0]).to.include({name:\"my-fifth-token-by-user-menu-action-for-admin\"}).\r",
+									"            and.to.include({expiration_date:\"9999-12-02T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[0].user).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[0].creator).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Action_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1]).to.include({name:\"my-first-token-by-admin-for-admin\"}).\r",
+									"            and.to.include({expiration_date:\"2025-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[1].user).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[1].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[2]).to.include({name:\"my-fourth-token-by-user-menu-action-for-user-menu-action\"}).\r",
+									"            and.to.include({expiration_date:\"2024-08-27T00:00:00+02:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[2].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Action_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[2].creator).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Action_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Action_Name\")});\r",
+									"\r",
+									"    pm.expect(responseJson.result[3]).to.include({name:\"my-second-token-by-admin-for-user-with-menu\"}).\r",
+									"            and.to.include({expiration_date:\"2099-12-31T00:00:00+01:00\"}).\r",
+									"            and.to.include({is_revoked:false});\r",
+									"\r",
+									"    pm.expect(responseJson.result[3].user).to.include({id:parseInt(pm.collectionVariables.get(\"User_Menu_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"User_Menu_Name\")});\r",
+									"    \r",
+									"    pm.expect(responseJson.result[3].creator).to.include({id:parseInt(pm.collectionVariables.get(\"Admin_Id\"))}).\r",
+									"            and.to.include({name:pm.collectionVariables.get(\"Admin_Name\")});\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "01d3892d-5bc1-463a-9cd3-a0ae458f5351"
+							}
+						}
+					],
+					"id": "f17640ac-ba0f-4be6-983e-4a377f84a5aa",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/administration/tokens?sort_by={\"token_name\":\"ASC\"}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"administration",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "{\"token_name\":\"ASC\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete my token 5 (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token5Name\") + \"' has been successfully deleted.\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    pm.collectionVariables.unset(\"Token5Name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "553bcf19-3f0b-498e-8a3c-fa4fa43df4f8"
+							}
+						}
+					],
+					"id": "98c6f7ee-bcd8-4b2e-a284-f84b1b8a42d2",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token5Name}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the token 1 of someone else (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token1Name\") + \"' has been successfully deleted.\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    pm.collectionVariables.unset(\"Token1Name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "bc3172f0-2aca-4d54-a534-ef6ef201f72e"
+							}
+						}
+					],
+					"id": "d0c690c6-b6fb-4bde-97cf-4533e983458b",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token1Name}}/users/{{Admin_Id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the token 2 of someone else (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token2Name\") + \"' has been successfully deleted.\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    pm.collectionVariables.unset(\"Token2Name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "e8f8365f-0098-42b8-b58e-32ce5914e052"
+							}
+						}
+					],
+					"id": "8141c474-ed3c-44f2-b66e-dce5f3a0ab48",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token2Name}}/users/{{User_Menu_Id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the token 6 of someone else (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The token with name '\" + pm.collectionVariables.get(\"Token6Name\") + \"' has been successfully deleted.\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    pm.collectionVariables.unset(\"Token6Name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "2754a091-1027-48f5-87c7-112e7a780b73"
+							}
+						}
+					],
+					"id": "3399254c-9aa0-4f86-8bf0-81cb80ac1bbe",
+					"protocolProfileBehavior": {
+						"disableCookies": true,
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/administration/tokens/{{Token6Name}}/users/{{Admin_Id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout from user with menu & action (successful)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test(\"Logout successful. The displayed message is the one that is expected ('Successful logout').\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(responseJson.message).to.eql(\"Successful logout\");\r",
+									"    pm.environment.unset(\"token\");\r",
+									"    pm.environment.unset(\"currentUserName\");\r",
+									"    pm.environment.unset(\"currentUserID\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "a0f7aad2-9cfc-4612-bdf5-fcad819d81d1"
+							}
+						}
+					],
+					"id": "8f919b8e-8ace-420b-803f-bc7dd0e3ee85",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token}}",
+								"key": "X-AUTH-TOKEN",
+								"in": "header"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"logout"
+							],
+							"variable": [
+								{
+									"id": "8aed8f22-21f6-47a2-87f5-ce9d7d175a70",
+									"key": "protocol",
+									"value": "{{protocol}}",
+									"description": "HTTP schema (This can only be one of http,https)"
+								},
+								{
+									"id": "cbf5fcfb-4150-4d69-84c0-5814a93f2b21",
+									"key": "server",
+									"value": "{{server}}",
+									"description": "IP address or hostname of Centreon server"
+								},
+								{
+									"id": "790a0d27-1310-4581-88ee-bbedf49ace33",
+									"key": "port",
+									"value": "{{port}}",
+									"description": "Port used by HTTP server"
+								},
+								{
+									"id": "12409bca-ccd9-4d64-920b-7b335b6f6a24",
+									"key": "version",
+									"value": "{{version}}",
+									"description": "Version of the API"
+								}
+							]
+						},
+						"description": "Entry point to delete an existing authentication token."
+					},
+					"response": []
+				}
+			],
+			"id": "98934ee6-2e7a-40c3-bcae-56496400ed74"
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": {
+			"key": "X-AUTH-TOKEN",
+			"value": "{{token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				],
+				"id": "ec55f584-c52b-4979-af34-2744590a1a9b"
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				],
+				"id": "f76221ed-45eb-460d-ae53-c21f9cce92a9"
+			}
+		}
+	]
+}
